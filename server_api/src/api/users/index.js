@@ -5,8 +5,6 @@ const { getAll, getById, create, update, remove } = require('./controller')
 
 const router = Router()
 
-const rounds = 10;
-
 router.get('/', token_user, getAll );
 
 router.get('/:id', token_user, getById );

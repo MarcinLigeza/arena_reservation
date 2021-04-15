@@ -19,9 +19,6 @@ const getOneById = (id, callback) => {
 }
 
 const authenticate = (password, user) => {
-    console.log("authenticating")
-    console.log(password)
-    console.log(user)
     return bcrypt.compare(password, user.password).then((valid) => valid ? user : false)
 }
 

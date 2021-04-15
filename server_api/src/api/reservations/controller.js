@@ -1,6 +1,5 @@
 const sqlite = require('sqlite3')
 const config = require('../../config')
-const { token_mode, token_user } = require('../../middlewares/token')
 
 const db = new sqlite.Database(config.databaseFile)
 
@@ -16,40 +15,27 @@ const getAll = (req, res, next) => {
     });
 }
 
-const getById = (req, res, next) => {
-    const sql = "SELECT * FROM reservations WHERE id = ?"
-    const params = [req.params.id]
-    db.get(sql, params, (err, row) => {
+const getWhere = (param, values, res) => {
+    const sql = "SELECT * FROM reservations WHERE " + param + " = ?";
+    db.get(sql, values, (err, row) => {
         if(err) {
             res.status(400).json({"error":err.message});
             return;
         }
         res.json(row)
     });
+}
+
+const getById = (req, res, next) => {
+    getWhere('id', [req.params.id], res);
 }
 
 const getByFieldId = (req, res, next) => {
-    const sql = "SELECT * FROM reservations WHERE field_id = ?"
-    const params = [req.params.id]
-    db.get(sql, params, (err, row) => {
-        if(err) {
-            res.status(400).json({"error":err.message});
-            return;
-        }
-        res.json(row)
-    });
+    getWhere('field_id', [req.params.id], res);
 }
 
 const getByDate = (req, res, next) => {
-    const sql = "SELECT * FROM reservations WHERE date = ?"
-    const params = [req.params.date]
-    db.get(sql, params, (err, row) => {
-        if(err) {
-            res.status(400).json({"error":err.message});
-            return;
-        }
-        res.json(row)
-    });
+    getWhere('date', [req.params.id], res);
 }
 
 const create = (req, res, next) => {

@@ -17,7 +17,7 @@ module.exports = (req,res, next) => {
         }
 
         if (authenticate(password, row)) {
-            console.log("successfully authenticated")
+            delete row['password'];
             req.user = row;
             next();
         } else {

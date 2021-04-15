@@ -1,11 +1,8 @@
 const { Router } = require('express')
-const sqlite = require('sqlite3')
-const config = require('../../config')
 const { token_mode, token_user } = require('../../middlewares/token')
 const { getAll, getById, create, update, remove, getByFieldId, getByDate } = require('./controller')
 
 const router = Router()
-const db = new sqlite.Database(config.databaseFile)
 
 router.get('/',
     token_user,

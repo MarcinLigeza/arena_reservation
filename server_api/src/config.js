@@ -1,7 +1,7 @@
 
 const config = {
     env: process.env.NODE_ENV || 'development',
-    port: 3000,
+    port: 3080,
     ip: '127.0.0.1',
     apiRoot: '/api', // http://localhost:3000/api/
     databaseFile: './server_db',
