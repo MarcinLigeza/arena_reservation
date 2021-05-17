@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react"
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+
+import './App.css'
+import MakeReservation from "./components/MakeReservation/MakeReservation";
+import Login from "./components/Login/Login"
+import ShowMyReservations from "./components/ShowMyReservations/ShowMyReservations";
+import Home from "./components/Home/Home";
+
+import parseJwt from "./parseJwt";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> yo yo and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  // render() {
+    const [token, setToken] = useState();
+
+    if(!token) {
+        return <Login setToken={setToken} />
+    }
+    sessionStorage.setItem("token", token);
+
+    const email = parseJwt(token).email
+
+    return (
+        <div className="wrapper">
+          <h1>Arena Reservation</h1>
+            {email && <p>Witaj { email }</p>}
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/" exact>
+                        <Home />
+                    </Route>
+                    <Route path="/makeReservation">
+                        <MakeReservation />
+                    </Route>
+                    <Route path="/showMyReservations">
+                        <ShowMyReservations />
+                    </Route>
+                </Switch>
+            </BrowserRouter>
+        </div>
+    );
+  // }
 }
 
 export default App;

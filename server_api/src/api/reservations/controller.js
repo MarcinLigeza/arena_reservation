@@ -38,6 +38,21 @@ const getByDate = (req, res, next) => {
     getWhere('date', [req.params.id], res);
 }
 
+const getByUsername = (req, res, next) => {
+    const sql = `SELECT reservations.id, users.email, fields.name, fields.address, reservations.date, reservations.hour
+                from reservations 
+                INNER JOIN users ON reservations.user_id = users.id
+                INNER JOIN fields ON reservations.field_id = fields.id
+                WHERE users.email = ?`;
+    db.all(sql, [req.params.username], (err, rows) => {
+        if(err) {
+            res.status(400).json({"error": err.message});
+            return;
+        }
+        res.json(rows)
+    });
+}
+
 const create = (req, res, next) => {
     let errors = []
     if(!req.body.user_id) {
@@ -115,10 +130,11 @@ const remove = (req, res, next) => {
         (err,result) => {
             if (err){
                 res.status(400).json({"error": err.message})
+                console.log("error while deleting");
                 return;
             }
             res.json({"message":"deleted", changes: this.changes})
         });
 }
 
-module.exports = { getAll, getById, create, update, remove, getByFieldId, getByDate };
+module.exports = { getAll, getById, create, update, remove, getByFieldId, getByDate, getByUsername };

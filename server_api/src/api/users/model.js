@@ -18,8 +18,8 @@ const getOneById = (id, callback) => {
     db.get(sql, params, callback);
 }
 
-const authenticate = (password, user) => {
-    return bcrypt.compare(password, user.password).then((valid) => valid ? user : false)
+const authenticate = (password, user, callback) => {
+    return bcrypt.compare(password, user.password, callback);
 }
 
 module.exports = { authenticate, getOneByEmail, getOneById};

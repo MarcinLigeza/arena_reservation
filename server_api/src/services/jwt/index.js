@@ -7,6 +7,7 @@ const sign = (user) => {
     };
     
     return jwt.sign({
+        email: user.email,
         id: user.id,
         role: user.role
     }, process.env.JWT_SECRET, options)

@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken')
 const config = require("../config")
-const { getOneById } = require('../api/users/model')
+const { getOneByEmail } = require('../api/users/model')
 
 const check_token = (req, res, next, roles) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET, {maxAge: config.jwtExpiration});
 
-        getOneById(decoded.id, (err, row) => {
+        getOneByEmail(decoded.email, (err, row) => {
             if(err) {
                 res.status(400).json({"error":err.message});
                 return;

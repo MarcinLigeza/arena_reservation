@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const { token_mode, token_user } = require('../../middlewares/token')
-const { getAll, getById, create, update, remove, getByFieldId, getByDate } = require('./controller')
+const { getAll, getById, create, update, remove, getByFieldId, getByDate, getByUsername } = require('./controller')
 
 const router = Router()
 
@@ -20,6 +20,10 @@ router.get('/bydate/:date',
     token_user,
     getByDate)
 
+router.get('/byusername/:username',
+    token_user,
+    getByUsername)
+
 router.post('/',
     token_user,
     create)
@@ -29,7 +33,7 @@ router.put("/:id",
     update)
 
 router.delete("/:id",
-    token_mode,
+    token_user,
     remove)
 
 module.exports = router
