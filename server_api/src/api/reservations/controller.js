@@ -16,8 +16,11 @@ const getAll = (req, res, next) => {
 }
 
 const getWhere = (param, values, res) => {
-    const sql = "SELECT * FROM reservations WHERE " + param + " = ?";
-    db.get(sql, values, (err, row) => {
+    const sql = `SELECT reservations.id, users.email, reservations.date, reservations.hour
+                 FROM reservations 
+                 INNER JOIN users ON reservations.user_id = users.id
+                 WHERE ` + param + ` = ?`;
+    db.all(sql, values, (err, row) => {
         if(err) {
             res.status(400).json({"error":err.message});
             return;

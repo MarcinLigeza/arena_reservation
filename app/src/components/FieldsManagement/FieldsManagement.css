@@ -1,14 +1,12 @@
-.ReservationForm {
-
+.FieldForm {
     margin: 0 20px 0 0;
-
 }
 
-.ReservationList {
+.FieldsList {
     margin: 0 0 0 20px;
 }
 
-.MakeReservation {
+.FieldsManagement {
     display:flex;
     flex-direction: row;
 }

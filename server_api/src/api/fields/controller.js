@@ -90,6 +90,7 @@ const remove = (req, res, next) => {
             res.status(400).json({"error": err.message})
             return;
         }
+        console.log("removing field id: " + req.params.id);
         res.json({"message": "deleted", changes: this.changes})
     });
 }

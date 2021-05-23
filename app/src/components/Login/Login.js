@@ -18,7 +18,7 @@ async function registerUser(credentials) {
         method: 'POST',
         body: JSON.stringify({
             email:credentials.username,
-            password:credentials.password
+            password:credentials.password1
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -30,9 +30,19 @@ export default function Login({setToken}) {
 
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
+    const [password1, setPassword1] = useState();
     const [password2, setPassword2] = useState();
 
-    let warning;
+    const [registerSuccess, setRegisterSuccess] = useState(false);
+    const [registerFail, setRegisterFail] = useState(false);
+
+    let warning = <p>Ok</p>;
+
+    const handleEmailChange = email => {
+        setUserName(email);
+        setRegisterSuccess(false);
+        setRegisterFail(false);
+    }
 
     const handleLogin = async e => {
         e.preventDefault();
@@ -45,17 +55,36 @@ export default function Login({setToken}) {
 
     const handleRegister = async e => {
         e.preventDefault();
-        if (password !== password2) {
-            warning = <p>Hasła różnią się od siebie</p>;
-            console.log("zle hasla");
-        }
-        else {
+        if(password1 === password2) {
             const resp = await registerUser({
                 username,
-                password
+                password1
             })
             console.log(resp);
+            if(resp.status === 400)
+            {
+                console.log("resp status 400");
+                setRegisterSuccess(false);
+                setRegisterFail(true);
+            }
+            else
+            {
+                setRegisterSuccess(true);
+                setRegisterFail(false);
+            }
         }
+    }
+
+    if (password1 !== password2 && password1.length > 0) {
+        warning = <p>Hasła różnią się od siebie</p>;
+    }
+
+    if(registerSuccess) {
+        warning = <p>Zarejestrowano pomyślnie, teraz możesz się zalogować</p>
+    }
+
+    if(registerFail) {
+        warning = <p>Rejestracja nie powiodła się, użytkownik o takim adresie email już istnieje</p>
     }
 
     return(
@@ -65,7 +94,7 @@ export default function Login({setToken}) {
                 <form onSubmit={handleLogin}>
                     <label>
                         <p>Email</p>
-                        <input type="text" onChange={e => setUserName(e.target.value)}/>
+                        <input type="text" onChange={e => handleEmailChange(e.target.value)}/>
                     </label>
                     <label>
                         <p>Hasło</p>
@@ -86,14 +115,14 @@ export default function Login({setToken}) {
                     </label>
                     <label>
                         <p>Hasło</p>
-                        <input type="password" onChange={e => setPassword(e.target.value)}/>
+                        <input type="password" onChange={e => setPassword1(e.target.value)}/>
                     </label>
                     <label>
                         <p>Powtórz hasło</p>
                         <input type="password" onChange={e => setPassword2(e.target.value)}/>
                     </label>
-                    {warning}
                     <p/>
+                    {warning}
                     <div>
                         <button type={"submit"}>Submit</button>
                     </div>

@@ -3,21 +3,19 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 import './App.css'
 import MakeReservation from "./components/MakeReservation/MakeReservation";
-import Login from "./components/Login/Login"
 import ShowMyReservations from "./components/ShowMyReservations/ShowMyReservations";
+import Login from "./components/Login/Login"
 import Home from "./components/Home/Home";
-
 import parseJwt from "./parseJwt";
+import FieldsManagement from "./components/FieldsManagement/FieldsManagement";
 
 function App() {
-  // render() {
     const [token, setToken] = useState();
 
     if(!token) {
         return <Login setToken={setToken} />
     }
     sessionStorage.setItem("token", token);
-
     const email = parseJwt(token).email
 
     return (
@@ -34,12 +32,14 @@ function App() {
                     </Route>
                     <Route path="/showMyReservations">
                         <ShowMyReservations />
+                    </Route>>
+                    <Route path="/fieldsManagement">
+                        <FieldsManagement />
                     </Route>
                 </Switch>
             </BrowserRouter>
         </div>
     );
-  // }
 }
 
 export default App;

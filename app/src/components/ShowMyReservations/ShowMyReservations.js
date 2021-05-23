@@ -19,12 +19,12 @@ export default function ShowMyReservations() {
     const [reservations, setReservations] = useState();
     const [reservation_id, setReservationID] = useState();
 
-    var username = 'marcin@gmail.com';
+    var username = parseJwt(sessionStorage.getItem("token")).email;
     var user_id = parseJwt(sessionStorage.getItem("token")).id;
 
     const handleDeleteReservation = async e => {
         e.preventDefault();
-
+        // eslint-disable-next-line
         if (reservations.some(reservation => reservation.id == reservation_id))
         {
             const resp = await removeReservation({
@@ -47,6 +47,7 @@ export default function ShowMyReservations() {
             }
         }).then( response => response.json().then(data => {
             setReservations(data);
+            console.log(data);
             setLoading(false);
         }));
     });
@@ -61,7 +62,11 @@ export default function ShowMyReservations() {
             <h2>Moje rezerwacje</h2>
             <p>
             </p>
-            <tbl.Table data={reservations}/>
+            {
+                reservations.length > 0
+                ? <tbl.Table data={reservations}/>
+                : <br/>
+            }
             <br />
             <form onSubmit={handleDeleteReservation}>
                 <label>

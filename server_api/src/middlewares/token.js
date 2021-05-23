@@ -13,7 +13,6 @@ const check_token = (req, res, next, roles) => {
                 return;
             }
             if (typeof(row) == 'undefined') {
-                console.log("row is undefined ");
                 res.status(400).json({"error":"cannot get inforamtion about user from database"});
                 return;
             }
@@ -26,12 +25,10 @@ const check_token = (req, res, next, roles) => {
                 req.user = {id: decoded.id, role: decoded.role};
                 next();
             } else {
-                console.error("User nie ma uprawnień administratora");
-                res.status(401).json({"Error":"Uzytkownik nie ma uprawnień administratora"}).end()
+                res.status(401).json({"Error":"Uzytkownik nie ma takich uprawnien"}).end()
             }
         })
     } catch (error) {
-        console.error(`Użyto niepoprawny token: ${req.headers.authorization}`);
         res.status(401).end()
     }
 }
@@ -45,7 +42,7 @@ const token_mode = (req, res, next) => {
 };
 
 const token_admin = (req, res, next) => {
-    check_token(req, res, next, ['admin']);
+    check_token(req, res, next, ['user']);
 };
 
 module.exports = {token_mode, token_admin, token_user};

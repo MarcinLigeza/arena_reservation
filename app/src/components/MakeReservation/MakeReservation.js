@@ -33,6 +33,8 @@ export default function MakeReservation() {
     const [isSubmSuccess, setIsSubmSuccess] = useState(false);
     const [isSubmFail, setIsSubmFail] = useState(false);
 
+    const [reservations, setReservations] = useState();
+    const [loadingFields, setLoadingFields] = useState(true);
 
     const user_id = parseJwt(sessionStorage.getItem("token")).id;
 
@@ -54,6 +56,26 @@ export default function MakeReservation() {
             setIsSubmSuccess(true);
         }
     }
+
+    const handleFieldIdChange = async fieldId => {
+        setFieldId(fieldId);
+        setLoadingFields(true);
+        const data = await fetch('http://localhost:3080/api/reservations/byfield/'+fieldId, {
+            method: 'GET',
+            headers: {
+                authorization: `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(response => response.json());
+        console.log("received reservations");
+        console.log(data);
+        setReservations(data);
+        if(data.length > 0) {
+            setLoadingFields(false);
+        }
+        else {
+            setLoadingFields(true);
+        }
+    };
 
     useEffect(() => {
        fetch('http://localhost:3080/api/fields/', {
@@ -80,34 +102,46 @@ export default function MakeReservation() {
     }
 
     return (
-        <div className="MakeReservation">
+        <div>
             <h2>Rezerwacja boiska</h2>
-            <div className="ReservationForm">
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        <p>ID obiektu</p>
-                        <input type="number" onChange={e => setFieldId(e.target.value)}/>
-                    </label>
-                    <label>
-                        <p>Data (DD-MM-RRRR)</p>
-                        <input type="text" onChange={e => setDate(e.target.value)}/>
-                    </label>
-                    <label>
-                        <p>Godzina</p>
-                        <input type="number" onChange={e => setHour(e.target.value)}/>
-                    </label>
-                    <div>
-                        <button type={"submit"}>Rezerwuj</button>
-                    </div>
-                    <p>
-                        {status}
-                    </p>
-                    <br/>
-                    <button onClick={ () => history.goBack()}>Wróć</button>
-                </form>
+            <div className="MakeReservation">
+                <div className="ReservationForm">
+                    <form onSubmit={handleSubmit}>
+                        <label>
+                            <p>ID obiektu</p>
+                            <input type="number" onChange={e => handleFieldIdChange(e.target.value)}/>
+                        </label>
+                        <label>
+                            <p>Data (DD-MM-RRRR)</p>
+                            <input type="text" onChange={e => setDate(e.target.value)}/>
+                        </label>
+                        <label>
+                            <p>Godzina</p>
+                            <input type="number" onChange={e => setHour(e.target.value)}/>
+                        </label>
+                        <div>
+                            <button type={"submit"}>Rezerwuj</button>
+                        </div>
+                        <p>
+                            {status}
+                        </p>
+                        <br/>
+                        <button onClick={ () => history.goBack()}>Wróć</button>
+                    </form>
+                </div>
+                <div>
+                    <h3>Lista obiektów</h3>
+                    <tbl.Table data={fields}/>
+                </div>
+                <div className="ReservationList">
+                    <h3>Lista rezerwacji wybranego obiektu</h3>
+                    {
+                        !loadingFields
+                        ? <tbl.Table data={reservations}></tbl.Table>
+                        : <p></p>
+                    }
+                </div>
             </div>
-            <h3>Lista obiektów</h3>
-            <tbl.Table data={fields}/>
         </div>
 
     );
