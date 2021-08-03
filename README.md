@@ -1,1 +1,3 @@
-"# arena_reservation" 
+# Arena reservation
+
+Advanced web techniques course project.
